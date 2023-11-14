@@ -6,4 +6,5 @@ class Book < ApplicationRecord
   validates :isbn, presence: true, uniqueness: true
   validates :available, inclusion: { in: [true, false] }
 
+  has_many :loans
 end

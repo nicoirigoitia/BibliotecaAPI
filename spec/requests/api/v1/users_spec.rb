@@ -113,5 +113,30 @@ RSpec.describe Api::V1::UsersController, type: :request do
         end
       end
     end
+
+    delete 'Deletes a user' do
+      tags 'Users'
+      consumes 'application/json'
+      parameter name: :id, in: :path, type: :string
+
+      response '204', 'user deleted' do
+        let(:existent_user) { create(:user) }
+        let(:id) { existent_user.id }
+
+        run_test! do |response|
+          expect(response.status).to eq(204)
+        end
+      end
+
+      response '404', 'user not found' do
+        let(:id) { 'invalid' }
+
+        run_test! do |response|
+          data = JSON.parse(response.body)
+          expect(response.status).to eq(404)
+          expect(data['errors']).to eq('User not found')
+        end
+      end
+    end
   end
 end

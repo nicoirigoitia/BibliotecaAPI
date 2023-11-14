@@ -88,6 +88,44 @@ RSpec.configure do |config|
               name: { type: :string },
               email: { type: :string }
             }
+          },
+          loan: {
+            type: :object,
+            properties: {
+              id: { type: :integer },
+              loaned_on: { type: :string },
+              due_on: { type: :string },
+              returned_on: { type: :string, nullable: true },
+              book: { '$ref' => '#/components/schemas/book' },
+              user: { '$ref' => '#/components/schemas/user' }
+            },
+            required: %w[id book user loaned_on due_on]
+          },
+          new_loan: {
+            type: :object,
+            properties: {
+              user_id: { type: :integer },
+              book_ids: {
+                type: :array,
+                items: { type: :integer }
+              },
+              loaned_on: { type: :string, format: 'date' }
+            },
+            required: %w[user_id book_ids loaned_on]
+          },
+          update_loan: {
+            type: :object,
+            properties: {
+              id: { type: :integer },
+              loaned_on: { type: :string },
+              due_on: { type: :string },
+              returned_on: { type: :string, nullable: true },
+              book_ids: {
+                type: :array,
+                items: { type: :integer }
+              },
+              user_id: { type: :integer }
+            }
           }
         }
       },

@@ -6,6 +6,8 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :books
       resources :users
+      post 'loans', to: 'loans#create'
+      put 'loans/return', to: 'loans#update'
     end
   end
 end

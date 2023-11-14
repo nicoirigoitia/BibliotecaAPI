@@ -90,6 +90,40 @@ paths:
           description: book deleted
         '404':
           description: book not found
+  "/api/v1/loans":
+    post:
+      summary: Creates a loan
+      tags:
+      - Loans
+      parameters: []
+      responses:
+        '201':
+          description: loans created
+        '422':
+          description: invalid request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/new_loan"
+  "/api/v1/loans/return":
+    put:
+      summary: Returns multiple loans
+      tags:
+      - Loans
+      parameters: []
+      responses:
+        '204':
+          description: loans returned
+        '422':
+          description: loan not found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: integer
   "/api/v1/users":
     get:
       summary: index all users
@@ -159,6 +193,21 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/update_user"
+    delete:
+      summary: Deletes a user
+      tags:
+      - Users
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: user deleted
+        '404':
+          description: user not found
 components:
   schemas:
     error_object:
@@ -252,6 +301,62 @@ components:
           type: string
         email:
           type: string
+    loan:
+      type: object
+      properties:
+        id:
+          type: integer
+        loaned_on:
+          type: string
+        due_on:
+          type: string
+        returned_on:
+          type: string
+          nullable: true
+        book:
+          "$ref": "#/components/schemas/book"
+        user:
+          "$ref": "#/components/schemas/user"
+      required:
+      - id
+      - book
+      - user
+      - loaned_on
+      - due_on
+    new_loan:
+      type: object
+      properties:
+        user_id:
+          type: integer
+        book_ids:
+          type: array
+          items:
+            type: integer
+        loaned_on:
+          type: string
+          format: date
+      required:
+      - user_id
+      - book_ids
+      - loaned_on
+    update_loan:
+      type: object
+      properties:
+        id:
+          type: integer
+        loaned_on:
+          type: string
+        due_on:
+          type: string
+        returned_on:
+          type: string
+          nullable: true
+        book_ids:
+          type: array
+          items:
+            type: integer
+        user_id:
+          type: integer
 servers:
 - url: https://{defaultHost}
   variables:
