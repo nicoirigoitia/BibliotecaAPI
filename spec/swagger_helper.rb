@@ -62,6 +62,32 @@ RSpec.configure do |config|
               isbn: { type: :string },
               available: { type: :boolean }
             }
+          },
+          user: {
+            type: :object,
+            properties: {
+              id: { type: :integer },
+              name: { type: :string },
+              email: { type: :string }
+            },
+            required: %w[id name email]
+          },
+          new_user: {
+            type: :object,
+            properties: {
+              id: { type: :integer },
+              name: { type: :string },
+              email: { type: :string }
+            },
+            required: %w[name email]
+          },
+          update_user: {
+            type: :object,
+            properties: {
+              id: { type: :integer },
+              name: { type: :string },
+              email: { type: :string }
+            }
           }
         }
       },
