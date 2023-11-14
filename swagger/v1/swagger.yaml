@@ -1,0 +1,364 @@
+---
+openapi: 3.0.1
+info:
+  title: API V1
+  version: v1
+paths:
+  "/api/v1/books":
+    get:
+      summary: Retrieves all books
+      tags:
+      - Books
+      responses:
+        '200':
+          description: books index
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/book"
+    post:
+      summary: Creates a book
+      tags:
+      - Books
+      parameters: []
+      responses:
+        '201':
+          description: book created
+        '422':
+          description: invalid request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/new_book"
+  "/api/v1/books/{id}":
+    get:
+      summary: Retrieves a book
+      tags:
+      - Books
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: book found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/book"
+        '404':
+          description: book not found
+    put:
+      summary: Updates a book
+      tags:
+      - Books
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: book updated
+        '422':
+          description: invalid request
+        '404':
+          description: book not found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/update_book"
+    delete:
+      summary: Deletes a book
+      tags:
+      - Books
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: book deleted
+        '404':
+          description: book not found
+  "/api/v1/loans":
+    post:
+      summary: Creates a loan
+      tags:
+      - Loans
+      parameters: []
+      responses:
+        '201':
+          description: loans created
+        '422':
+          description: invalid request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/new_loan"
+  "/api/v1/loans/return":
+    put:
+      summary: Returns multiple loans
+      tags:
+      - Loans
+      parameters: []
+      responses:
+        '204':
+          description: loans returned
+        '422':
+          description: loan not found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: integer
+  "/api/v1/users":
+    get:
+      summary: index all users
+      tags:
+      - Users
+      responses:
+        '200':
+          description: users index
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/user"
+    post:
+      summary: Creates a user
+      tags:
+      - Users
+      parameters: []
+      responses:
+        '201':
+          description: user created
+        '422':
+          description: invalid request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/new_user"
+  "/api/v1/users/{id}":
+    get:
+      summary: Retrieves a user
+      tags:
+      - Users
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: user found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/user"
+        '404':
+          description: user not found
+    put:
+      summary: Updates a user
+      tags:
+      - Users
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: user updated
+        '404':
+          description: user not found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/update_user"
+    delete:
+      summary: Deletes a user
+      tags:
+      - Users
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: user deleted
+        '404':
+          description: user not found
+components:
+  schemas:
+    error_object:
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+    book:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        author:
+          type: string
+        isbn:
+          type: string
+        available:
+          type: boolean
+      required:
+      - id
+      - title
+      - author
+      - isbn
+      - available
+    new_book:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        author:
+          type: string
+        isbn:
+          type: string
+        available:
+          type: boolean
+      required:
+      - title
+      - author
+      - isbn
+      - available
+    update_book:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        author:
+          type: string
+        isbn:
+          type: string
+        available:
+          type: boolean
+    user:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+      required:
+      - id
+      - name
+      - email
+    new_user:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+      required:
+      - name
+      - email
+    update_user:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+    loan:
+      type: object
+      properties:
+        id:
+          type: integer
+        loaned_on:
+          type: string
+        due_on:
+          type: string
+        returned_on:
+          type: string
+          nullable: true
+        book:
+          "$ref": "#/components/schemas/book"
+        user:
+          "$ref": "#/components/schemas/user"
+      required:
+      - id
+      - book
+      - user
+      - loaned_on
+      - due_on
+    new_loan:
+      type: object
+      properties:
+        user_id:
+          type: integer
+        book_ids:
+          type: array
+          items:
+            type: integer
+        loaned_on:
+          type: string
+          format: date
+      required:
+      - user_id
+      - book_ids
+      - loaned_on
+    update_loan:
+      type: object
+      properties:
+        id:
+          type: integer
+        loaned_on:
+          type: string
+        due_on:
+          type: string
+        returned_on:
+          type: string
+          nullable: true
+        book_ids:
+          type: array
+          items:
+            type: integer
+        user_id:
+          type: integer
+servers:
+- url: https://{defaultHost}
+  variables:
+    defaultHost:
+      default: www.example.com
